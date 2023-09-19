@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .chat-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>ChatBot</h1>
+        <h4>Made by Will</h4>
+        <input type="text" id="user-query" placeholder="Ask a question">
+        <button id="ask-button">Ask ChatBot</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        const askButton = document.getElementById('ask-button');
+        const userQueryInput = document.getElementById('user-query');
+        const responseDiv = document.getElementById('response');
+
+        userQueryInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default Enter key behavior (e.g., line break)
+                askChatBot(); // Trigger the chatbot request
+             }
+        })
+        
+        askButton.addEventListener('click', async () => {
+            const userMessage = userQueryInput.value;
+            
+            try {
+                const response = await fetch('/chatWithBot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: userMessage }),
+                });
+
+                const data = await response.json();
+                responseDiv.textContent = data.response;
+            } catch (error) {
+                console.error('Error:', error);
+                responseDiv.textContent = 'An error occurred.';
+            }
+        });
+    </script>
+</body>
+</html>
