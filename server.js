@@ -5,13 +5,13 @@ const OpenAI = require('openai');
 const axios = require('axios');
 const app = express();
 const port = process.env.PORT || 3000;
-
+require('dotenv').config();
 
 
 // Set up middleware, routes, and other server configurations here
 // app.use(express.json( ));
 
-const openaiApiKey = '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'
+const openaiApiKey = process.env.OPENAI_API_KEY;
 const openai = new OpenAI({
   apiKey: openaiApiKey,
 });
@@ -24,8 +24,11 @@ app.use(express.static(__dirname));
 async function chatWithBot(input) {
   try {
     const params = {
-      messages: [{ role: 'user', content: input }],
-      model: 'gpt-3.5-turbo-0613',
+      messages: [
+        { role: 'system', content: 'You are chatting with a fine-tuned chatbot.' },
+        { role: 'user', content: input },
+      ],
+      model: 'ft:gpt-3.5-turbo-0613:personal::80bjJCZd', // Replace with your Fine-Tuned Model ID
     };
 
     const completion = await openai.chat.completions.create(params);
